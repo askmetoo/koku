@@ -42,7 +42,7 @@ class KokuTenantMiddlewareTest(IamTestCase):
         """Set up middleware tests."""
         super().setUp()
         request = self.request_context["request"]
-        request.path = "/api/v1/providers/"
+        request.path = "/api/v1/sources/"
         serializer = UserSerializer(data=self.user_data, context=self.request_context)
         if serializer.is_valid(raise_exception=True):
             user = serializer.save()
@@ -57,7 +57,7 @@ class KokuTenantMiddlewareTest(IamTestCase):
 
     def test_get_tenant_with_no_user(self):
         """Test that a 401 is returned."""
-        mock_request = Mock(path="/api/v1/providers/", user=None)
+        mock_request = Mock(path="/api/v1/sources/", user=None)
         middleware = KokuTenantMiddleware()
         result = middleware.process_request(mock_request)
         self.assertIsInstance(result, HttpResponseUnauthorizedRequest)
@@ -65,7 +65,7 @@ class KokuTenantMiddlewareTest(IamTestCase):
     def test_get_tenant_user_not_found(self):
         """Test that a 401 is returned."""
         mock_user = Mock(username="mockuser")
-        mock_request = Mock(path="/api/v1/providers/", user=mock_user)
+        mock_request = Mock(path="/api/v1/sources/", user=mock_user)
         middleware = KokuTenantMiddleware()
         result = middleware.process_request(mock_request)
         self.assertIsInstance(result, HttpResponseUnauthorizedRequest)
@@ -78,7 +78,7 @@ class IdentityHeaderMiddlewareTest(IamTestCase):
         """Set up middleware tests."""
         super().setUp()
         self.request = self.request_context["request"]
-        self.request.path = "/api/v1/providers/"
+        self.request.path = "/api/v1/sources/"
         self.request.META["QUERY_STRING"] = ""
 
     def test_process_status(self):
@@ -108,7 +108,7 @@ class IdentityHeaderMiddlewareTest(IamTestCase):
         del customer["account_id"]
         request_context = self._create_request_context(customer, self.user_data, create_customer=False)
         mock_request = request_context["request"]
-        mock_request.path = "/api/v1/providers/"
+        mock_request.path = "/api/v1/sources/"
         middleware = IdentityHeaderMiddleware()
         middleware.process_request(mock_request)
         self.assertTrue(hasattr(mock_request, "user"))
@@ -162,7 +162,7 @@ class IdentityHeaderMiddlewareTest(IamTestCase):
             customer, user_data, create_customer=True, create_tenant=True, is_admin=False
         )
         mock_request = request_context["request"]
-        mock_request.path = "/api/v1/providers/"
+        mock_request.path = "/api/v1/sources/"
         mock_request.META["QUERY_STRING"] = ""
 
         middleware = IdentityHeaderMiddleware()
@@ -184,7 +184,7 @@ class IdentityHeaderMiddlewareTest(IamTestCase):
             customer, user_data, create_customer=True, create_tenant=True, is_admin=True, is_cost_management=False
         )
         mock_request = request_context["request"]
-        mock_request.path = "/api/v1/providers/"
+        mock_request.path = "/api/v1/sources/"
         mock_request.META["QUERY_STRING"] = ""
 
         middleware = IdentityHeaderMiddleware()
@@ -199,7 +199,7 @@ class IdentityHeaderMiddlewareTest(IamTestCase):
             customer, user_data, create_customer=True, create_tenant=True, is_admin=True, is_cost_management=False
         )
         mock_request = request_context["request"]
-        mock_request.path = "/api/v1/providers/"
+        mock_request.path = "/api/v1/sources/"
         mock_request.META["HTTP_X_RH_IDENTITY"] = "not a header"
 
         middleware = IdentityHeaderMiddleware()
@@ -214,7 +214,7 @@ class IdentityHeaderMiddlewareTest(IamTestCase):
             customer, user_data, create_customer=True, create_tenant=True, is_admin=True, is_cost_management=True
         )
         mock_request = request_context["request"]
-        mock_request.path = "/api/v1/providers/"
+        mock_request.path = "/api/v1/sources/"
         mock_request.META["QUERY_STRING"] = ""
 
         with patch("koku.middleware.Customer.objects") as mock_customer:
@@ -233,7 +233,7 @@ class IdentityHeaderMiddlewareTest(IamTestCase):
             customer, user_data, create_customer=True, create_tenant=True, is_admin=False, is_cost_management=True
         )
         mock_request = request_context["request"]
-        mock_request.path = "/api/v1/providers/"
+        mock_request.path = "/api/v1/sources/"
         mock_request.META["QUERY_STRING"] = ""
 
         middleware = IdentityHeaderMiddleware()
@@ -250,7 +250,7 @@ class IdentityHeaderMiddlewareTest(IamTestCase):
             customer, user_data, create_customer=True, create_tenant=True, is_admin=False, is_cost_management=True
         )
         mock_request = request_context["request"]
-        mock_request.path = "/api/v1/providers/"
+        mock_request.path = "/api/v1/sources/"
         mock_request.META["QUERY_STRING"] = ""
 
         middleware = IdentityHeaderMiddleware()

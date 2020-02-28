@@ -28,12 +28,17 @@ from rest_framework import permissions
 from rest_framework import mixins
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.decorators import action
 from rest_framework.exceptions import APIException
 from rest_framework.exceptions import ParseError
 from rest_framework.permissions import AllowAny
 
 from api.common.filters import CharListFilter
 from api.provider.models import Sources
+from api.provider.provider_manager import ProviderManager
+from api.iam.models import Tenant
+from api.iam.serializers import create_schema_name
 from sources.api import get_account_from_header, get_auth_header
 from sources.api.serializers import SourcesSerializer
 from sources.api.serializers import AdminSourcesSerializer
@@ -146,3 +151,15 @@ class SourcesViewSet(*MIXIN_LIST):
         response = super().retrieve(request=request, args=args, kwargs=kwargs)
 
         return response
+
+    @never_cache
+    @action(methods=["get"], detail=True, permission_classes=[AllowAny])
+    def stats(self, request, source_id=None):
+        """Get source stats."""
+        account_id = get_account_from_header(request)
+        schema_name = create_schema_name(account_id)
+        source = get_object_or_404(Sources, source_id=source_id, account_id=account_id)
+        manager = ProviderManager(source.koku_uuid)
+        tenant = Tenant.objects.get(schema_name=schema_name)
+        stats = manager.provider_statistics(tenant)
+        return Response(stats)
