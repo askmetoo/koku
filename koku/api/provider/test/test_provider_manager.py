@@ -25,6 +25,7 @@ from rest_framework.request import Request
 from tenant_schemas.utils import tenant_context
 
 from api.iam.models import Customer
+from api.iam.models import User
 from api.iam.serializers import UserSerializer
 from api.iam.test.iam_test_case import IamTestCase
 from api.metrics.models import CostModelMetricsMap
@@ -61,9 +62,7 @@ class ProviderManagerTest(IamTestCase):
         """Set up the provider manager tests."""
         super().setUp()
         self.customer = Customer.objects.get(account_id=self.customer_data["account_id"])
-        serializer = UserSerializer(data=self.user_data, context=self.request_context)
-        if serializer.is_valid(raise_exception=True):
-            self.user = serializer.save()
+        self.user = User.object.get(username=self.user_data["username"])
 
     @staticmethod
     def _create_delete_request(user, headers={}):
