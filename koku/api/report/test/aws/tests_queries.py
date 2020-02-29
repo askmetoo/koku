@@ -56,7 +56,7 @@ class AWSReportQueryTest(IamTestCase):
         """Set up the customer view tests."""
         self.dh = DateHelper()
         super().setUp()
-        _, self.provider = create_generic_provider(Provider.PROVIDER_AWS, self.headers)
+        _, self.provider = create_generic_provider(Provider.PROVIDER_AWS, self.request_context)
         self.fake_aws = FakeAWSCostData(self.provider)
         self.generator = AWSReportDataGenerator(self.tenant)
         self.generator.add_data_to_tenant(self.fake_aws)
@@ -1237,7 +1237,7 @@ class AWSReportQueryLogicalAndTest(IamTestCase):
         """Set up the customer view tests."""
         self.dh = DateHelper()
         super().setUp()
-        _, self.provider = create_generic_provider(Provider.PROVIDER_AWS, self.headers)
+        _, self.provider = create_generic_provider(Provider.PROVIDER_AWS, self.request_context)
         self.fake_aws = FakeAWSCostData(self.provider)
         self.generator = AWSReportDataGenerator(self.tenant)
 
@@ -1294,7 +1294,7 @@ class AWSQueryHandlerTest(IamTestCase):
         """Set up the customer view tests."""
         self.dh = DateHelper()
         super().setUp()
-        _, self.provider = create_generic_provider("AWS", self.headers)
+        _, self.provider = create_generic_provider(Provider.PROVIDER_AWS, self.request_context)
         self.fake_aws = FakeAWSCostData(self.provider)
         self.generator = AWSReportDataGenerator(self.tenant)
         self.generator.add_data_to_tenant(self.fake_aws)

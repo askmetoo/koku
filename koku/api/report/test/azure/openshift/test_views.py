@@ -75,7 +75,7 @@ class OCPAzureReportViewTest(IamTestCase):
 
     def test_group_bys_with_second_group_by_tag(self):
         """Test that a group by project followed by a group by tag does not error."""
-        _, provider = create_generic_provider(Provider.PROVIDER_OCP, self.headers)
+        _, provider = create_generic_provider(Provider.PROVIDER_OCP, self.request_context)
         data_generator = OCPAzureReportDataGenerator(self.tenant, provider)
         data_generator.add_data_to_tenant()
         with tenant_context(self.tenant):
