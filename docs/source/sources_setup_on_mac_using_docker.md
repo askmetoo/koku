@@ -1,5 +1,8 @@
-1. Clone the repo and change to the dir: `git clone https://github.com/RedHatInsights/sources-api`
-2. Install ruby and rails. Note that to install rails you might have to add `/usr/local/lib/ruby/gems/2.6.0/bin:/usr/local/opt/ruby/bin` to the beginning of your `$PATH` and that I had to use `sudo` when using `gem install` but it may not be required:
+Sources API setup on Mac using Docker
+=====================================
+1. Clone the repository and change to the sources-api directory:
+```git clone https://github.com/RedHatInsights/sources-api```
+2. Install ruby and rails. To install rails you might have to add `/usr/local/lib/ruby/gems/2.6.0/bin:/usr/local/opt/ruby/bin` to the beginning of your `$PATH`. I had to use `sudo` when using `gem install` but it may not be required:
 ```
 brew install ruby
 brew install libpq
@@ -13,7 +16,7 @@ bundle install
 cp v2_key.dev v2_key
 cp config/database.dev.yml config/database.yml
 ```
-4. Edit the database.yml to match sources database settings.  Port, username, and password (have to add this line):
+4. Edit the database.yml to match sources database settings.  The differences are the port, username, and password (you have to add this line):
 ```
 default: &default
   adapter: postgresql
@@ -38,7 +41,6 @@ test:
 production:
   <<: *default
   database: sources_api_production
-
 ```
 5. Create a docker-compose.yml that has the following:
 ```
@@ -82,7 +84,7 @@ QUEUE_PORT=29092 bundle exec rails s
 ```
 x-rh-identity eyJpZGVudGl0eSI6IHsiYWNjb3VudF9udW1iZXIiOiAiMTAwMDEiLCAidHlwZSI6ICJVc2VyIiwgInVzZXIiOiB7InVzZXJuYW1lIjogInVzZXJfZGV2IiwgImVtYWlsIjogInVzZXJfZGV2QGZvby5jb20iLCAiaXNfb3JnX2FkbWluIjogdHJ1ZX19LCAiZW50aXRsZW1lbnRzIjogeyJvcGVuc2hpZnQiOiB7ImlzX2VudGl0bGVkIjogdHJ1ZX19fQ==
 ```
-8. Change to the Koku directory, add `API_PATH_PREFIX=/api/cost-management` to your env file for Koku. Start Koku and let the `koku_serve` finish booting - you can view the `koku-server` logs to ensure that it is finished.
+8. Change to the Koku directory, add `API_PATH_PREFIX=/api/cost-management` to your env file for Koku. Start Koku and let the server finish booting - you can view the `koku-server` logs to ensure that it is finished.
 ```
 docker-compose up -d
 docker-compose logs -f koku-server
