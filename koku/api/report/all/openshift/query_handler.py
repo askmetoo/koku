@@ -39,6 +39,7 @@ class OCPAllReportQueryHandler(OCPInfrastructureReportQueryHandlerBase):
 
         self.group_by_options = self._mapper.provider_map.get("group_by_options")
         self._limit = parameters.get_filter("limit")
+        # TODO: Figure out how to transform the data here.
 
         # super() needs to be called after _mapper and _limit is set
         super().__init__(parameters)

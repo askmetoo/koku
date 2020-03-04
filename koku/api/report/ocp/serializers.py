@@ -173,7 +173,7 @@ class OCPQueryParamSerializer(ParamSerializer):
 class OCPInventoryQueryParamSerializer(OCPQueryParamSerializer):
     """Serializer for handling inventory query parameters."""
 
-    delta_choices = ("cost", "usage", "request")
+    delta_choices = ("cost", "usage", "request", "cost_total")
 
     delta_fields = ("usage", "request", "limit", "capacity")
 
@@ -204,6 +204,8 @@ class OCPInventoryQueryParamSerializer(OCPQueryParamSerializer):
     def validate_delta(self, value):
         """Validate delta is valid."""
         error = {}
+        # TODO: Figure out if cost can be in this "__" if so figure
+        # out how to replace it with cost_total
         if "__" in value:
             values = value.split("__")
             if len(values) != 2:
@@ -214,6 +216,8 @@ class OCPInventoryQueryParamSerializer(OCPQueryParamSerializer):
                     error[value] = _("Unsupported parameter")
                     raise serializers.ValidationError(error)
         else:
+            if value == "cost":
+                return "cost_total"
             if value not in self.delta_choices:
                 error[value] = _("Unsupported parameter")
                 raise serializers.ValidationError(error)
@@ -223,7 +227,7 @@ class OCPInventoryQueryParamSerializer(OCPQueryParamSerializer):
 class OCPCostQueryParamSerializer(OCPQueryParamSerializer):
     """Serializer for handling cost query parameters."""
 
-    DELTA_CHOICES = ("cost", "cost")
+    DELTA_CHOICES = (("cost", "cost"), ("cost_total", "cost_total"))
 
     delta = serializers.ChoiceField(choices=DELTA_CHOICES, required=False)
 
@@ -240,4 +244,10 @@ class OCPCostQueryParamSerializer(OCPQueryParamSerializer):
         """
         super().validate_order_by(value)
         validate_field(self, "order_by", OrderBySerializer, value)
+        return value
+
+    def validate_delta(self, value):
+        """Validate delta is valid."""
+        if value == "cost":
+            return "cost_total"
         return value
